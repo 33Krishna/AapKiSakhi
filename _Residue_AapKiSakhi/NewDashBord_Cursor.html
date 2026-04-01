@@ -1,0 +1,1512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<title>Gold Tools</title>
+
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+	<style>
+		:root {
+			--brand: #01284c;
+			--bg: #f6f8fb;
+			--panel: #ffffff;
+			--text: #0f172a;
+			--muted: #475569;
+			--border: rgba(15,23,42,.08);
+			--hover: #f1f5f9;
+			--accent-blue: #2563eb;
+			--accent-red: #ef4444;
+			--accent-amber: #f59e0b;
+			--accent-green: #10b981;
+		}
+
+		* {
+			box-sizing: border-box
+		}
+
+		html, body {
+			height: 100%
+		}
+
+		body {
+			margin: 0;
+			font-family: Inter,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,"Helvetica Neue",Arial;
+			color: var(--text);
+			background: var(--bg);
+		}
+
+		a {
+			color: var(--brand);
+			text-decoration: none
+		}
+
+			a:hover {
+				text-decoration: underline
+			}
+
+		/* Top bar: white -> #01284c */
+		.topbar {
+			position: sticky;
+			top: 0;
+			z-index: 60;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			gap: 16px;
+			padding: 12px 20px;
+			border-bottom: 1px solid var(--border);
+			background: linear-gradient(90deg, #ffffff 0%, var(--brand) 100%);
+		}
+
+		.brand {
+			display: flex;
+			align-items: center;
+			gap: 12px
+		}
+
+		.logo {
+			width: 36px;
+			height: 36px;
+			border-radius: 10px;
+			background: linear-gradient(135deg, #60a5fa, #22d3ee);
+			border: 1px solid rgba(0,0,0,.06);
+		}
+
+		.brand-name {
+			font-weight: 700;
+			color: #0b2136
+		}
+
+		.userbox {
+			display: flex;
+			align-items: center;
+			gap: 10px;
+			color: #ffffff
+		}
+
+		.btn-ghost {
+			background: transparent;
+			border: 1px solid rgba(255,255,255,.65);
+			color: #ffffff;
+			border-radius: 10px;
+			padding: 8px 12px;
+			cursor: pointer;
+		}
+
+			.btn-ghost:hover {
+				background: rgba(255,255,255,.12)
+			}
+
+		/* Centered Menubar with dropdowns */
+		.menubar-wrap {
+			position: sticky;
+			top: 56px;
+			z-index: 50; /* sticks below topbar */
+			background: #ffffff;
+			border-bottom: 1px solid var(--border);
+		}
+
+		.menubar {
+			max-width: 1200px;
+			margin: 0 auto;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			padding: 8px 12px;
+			gap: 18px;
+			flex-wrap: wrap;
+		}
+
+		.menu {
+			list-style: none;
+			margin: 0;
+			padding: 0;
+			display: flex;
+			gap: 8px;
+			align-items: center;
+			flex-wrap: wrap;
+		}
+
+			.menu > li {
+				position: relative
+			}
+
+				.menu > li > a {
+					display: flex;
+					align-items: center;
+					gap: 8px;
+					padding: 8px 12px;
+					border-radius: 10px;
+					color: #0b2136;
+					border: 1px solid transparent;
+					font-weight: 600;
+				}
+
+					.menu > li > a:hover {
+						background: var(--hover);
+						border-color: var(--border)
+					}
+
+			.menu .fa {
+				color: var(--brand)
+			}
+		/* Submenus */
+		.submenu {
+			position: absolute;
+			left: 50%;
+			top: 100%;
+			transform: translateX(-50%);
+			min-width: 220px;
+			padding: 8px;
+			background: #ffffff;
+			border: 1px solid var(--border);
+			border-radius: 12px;
+			box-shadow: 0 12px 28px rgba(2,6,23,.12);
+			display: none;
+		}
+
+			.submenu a {
+				display: flex;
+				align-items: center;
+				gap: 10px;
+				padding: 10px;
+				border-radius: 10px;
+				color: #0f172a;
+				white-space: nowrap;
+			}
+
+				.submenu a:hover {
+					background: #f7f9fc
+				}
+
+		.menu > li:focus-within .submenu,
+		.menu > li:hover .submenu {
+			display: block
+		}
+
+		/* Layout */
+		.wrapper {
+			padding: 20px
+		}
+
+		.layout {
+			display: grid;
+			grid-template-columns: 320px 1fr;
+			gap: 20px
+		}
+
+		@media (max-width: 900px) {
+			.layout {
+				grid-template-columns: 1fr
+			}
+		}
+
+		/* Side tabs EXACT style */
+		.side-tabs {
+			display: flex;
+			flex-direction: column;
+			gap: 12px
+		}
+
+		.tab-btn {
+			display: flex;
+			align-items: center;
+			gap: 10px;
+			width: 100%;
+			text-align: left;
+			cursor: pointer;
+			background: #ffffff;
+			border: 1px solid var(--border);
+			border-radius: 10px;
+			padding: 14px 16px;
+			color: #0f172a;
+			font-weight: 600;
+			position: relative;
+			box-shadow: 0 2px 6px rgba(2,6,23,.04);
+			transition: background .15s, border-color .15s, color .15s, box-shadow .15s;
+		}
+			/* left colored line */
+			.tab-btn::before {
+				content: "";
+				position: absolute;
+				left: 0;
+				top: 6px;
+				bottom: 6px;
+				width: 4px;
+				border-radius: 6px;
+				background: var(--tab-accent, var(--accent-blue));
+			}
+			/* icon color matches accent */
+			.tab-btn .tab-ico {
+				width: 20px;
+				color: var(--tab-accent, var(--accent-blue))
+			}
+			/* hover */
+			.tab-btn:hover {
+				background: var(--hover)
+			}
+			/* active (highlight) - #01284c bg, white text */
+			.tab-btn.active {
+				background: var(--brand);
+				border-color: var(--brand);
+				color: #ffffff;
+				box-shadow: none;
+			}
+
+				.tab-btn.active .tab-ico {
+					color: #ffffff
+				}
+				/* keep the left bar white when active for contrast */
+				.tab-btn.active::before {
+					background: #ffffff
+				}
+
+		/* per-tab accents */
+		.accent-amber {
+			--tab-accent: var(--accent-amber);
+		}
+
+		.accent-blue {
+			--tab-accent: var(--accent-blue);
+		}
+
+		.accent-red {
+			--tab-accent: var(--accent-red);
+		}
+
+		.accent-green {
+			--tab-accent: var(--accent-green);
+		}
+
+		/* Content card */
+		.card {
+			background: var(--panel);
+			border: 1px solid var(--border);
+			border-radius: 14px;
+			padding: 18px;
+			box-shadow: 0 8px 18px rgba(2,6,23,.05);
+		}
+
+			.card h3 {
+				margin: 0 0 8px
+			}
+
+		.muted {
+			color: var(--muted)
+		}
+
+		.hidden {
+			display: none
+		}
+
+		/* Footer */
+		.footer {
+			margin: 24px 20px 10px;
+			text-align: center;
+			color: var(--muted);
+			border-top: 1px solid var(--border);
+			padding-top: 12px;
+		}
+	</style>
+	<style>
+        /* Headings inside right content cards */
+        .panel-title {
+            margin: 0 0 10px;
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        /* Current Gold Rate layout */
+        .rate-wrap {
+            display: grid;
+            grid-template-columns: 1.1fr 1fr;
+            gap: 16px;
+        }
+
+        .rate-hero {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+        }
+
+        .rate-badge {
+            display: inline-block;
+            background: #eef6ff;
+            color: #01284c;
+            border: 1px solid #cde3f7;
+            padding: 4px 8px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .rate-figure {
+            font-size: 44px;
+            font-weight: 800;
+            line-height: 1;
+            margin: 6px 0
+        }
+
+        .rate-sub {
+            color: #475569;
+            font-size: 18px;
+            font-weight: 600
+        }
+
+        .rate-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 10px;
+        }
+
+            .rate-table thead th {
+                text-align: left;
+                font-size: 13px;
+                color: #475569;
+                padding: 8px 12px;
+            }
+
+            .rate-table tbody tr {
+                background: #fff;
+                border: 1px solid #ef4444;
+                border-radius: 8px;
+                overflow: hidden;
+            }
+
+            .rate-table td {
+                padding: 10px 14px;
+                border-left: 1px solid #ef4444;
+            }
+
+                .rate-table td:first-child {
+                    border-left: none;
+                    width: 40%
+                }
+
+        /* Sales Price Calculator */
+        .calc-form {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+            .calc-form .row {
+                display: grid;
+                grid-template-columns: 120px 1fr;
+                align-items: center;
+                gap: 10px;
+            }
+
+        .calc-input {
+            height: 36px;
+            border: 1px solid rgba(15,23,42,.12);
+            border-radius: 8px;
+            padding: 0 10px;
+            width: 100%;
+            background: #fff;
+        }
+
+        .calc-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #fff;
+            border: 1px solid rgba(15,23,42,.12);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+            .calc-table th, .calc-table td {
+                padding: 10px 12px;
+                border-bottom: 1px solid rgba(15,23,42,.08);
+                text-align: right;
+            }
+
+                .calc-table th:first-child, .calc-table td:first-child {
+                    text-align: left;
+                    width: 40%
+                }
+
+            .calc-table tfoot td {
+                font-weight: 700;
+            }
+
+            .calc-table .muted {
+                color: #475569;
+                font-weight: 500
+            }
+	</style>
+	<style>
+        /* Polished section header */
+        .panel-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 0 0 12px;
+            padding-bottom: 10px;
+            position: relative;
+        }
+
+            .panel-header::after {
+                content: "";
+                position: absolute;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                height: 3px;
+                background: linear-gradient(90deg, #01284c, rgba(1,40,76,.2) 60%, transparent);
+                border-radius: 999px;
+            }
+
+        .ph-icon {
+            width: 40px;
+            height: 40px;
+            display: grid;
+            place-items: center;
+            background: linear-gradient(135deg, #fef3c7, #fde68a);
+            border: 1px solid #f59e0b55;
+            border-radius: 10px;
+            color: #b45309;
+        }
+
+        .panel-title {
+            margin: 0;
+            font-size: 22px;
+            font-weight: 800;
+            letter-spacing: .2px
+        }
+
+        .panel-sub {
+            margin: 2px 0 0;
+            color: #475569;
+            font-weight: 600;
+            font-size: 14px
+        }
+
+        /* Badge (unchanged styles ok) */
+        .rate-badge {
+            display: inline-block;
+            background: #eef6ff;
+            color: #01284c;
+            border: 1px solid #cde3f7;
+            padding: 4px 10px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+	</style>
+	<style>
+        /* Rate cards v2: icon top-center, glow on hover, no left line */
+        .rate-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(210px,1fr));
+            gap: 12px;
+        }
+
+        .rate-card {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 10px;
+            text-align: center;
+            background: #ffffff;
+            border: 1px solid rgba(15,23,42,.08);
+            border-radius: 16px;
+            padding: 16px 14px;
+            box-shadow: 0 2px 8px rgba(2,6,23,.06);
+            transition: transform .18s ease, box-shadow .2s ease, border-color .2s ease;
+            isolation: isolate;
+        }
+
+            .rate-card::before {
+                content: "";
+                position: absolute;
+                inset: -1px;
+                border-radius: 18px;
+                background: linear-gradient(145deg, rgba(203,1,1,.12), rgba(1,40,76,.10));
+                filter: blur(12px);
+                opacity: 0;
+                transition: opacity .2s ease;
+                z-index: -1;
+            }
+
+            .rate-card:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 12px 28px rgba(203,1,1,.35), 0 3px 8px rgba(2,6,23,.05);
+                border-color: rgba(203,1,1,.35);
+            }
+
+                .rate-card:hover::before {
+                    opacity: 1
+                }
+
+        /* Icon top center */
+        .rc-ico {
+            height: 56px;
+            width: 56px;
+            border-radius: 14px;
+            display: grid;
+            place-items: center;
+            background: linear-gradient(135deg, #fff6f6, #ffeaea);
+            color: #cb0101;
+            border: 1px solid rgba(203,1,1,.25);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,.85);
+            font-size: 22px;
+        }
+
+        /* Amount + unit */
+        .rc-rate {
+            font-weight: 900;
+            color: #01284c;
+            font-size: 22px;
+            line-height: 1
+        }
+
+        .rc-unit {
+            font-size: 11px;
+            color: #64748b;
+            font-weight: 700;
+            letter-spacing: .16em;
+            text-transform: uppercase
+        }
+
+        /* Purity badge */
+        .rc-badge {
+            margin-top: 4px;
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 999px;
+            background: #eef6ff;
+            color: #01284c;
+            border: 1px solid #cde3f7;
+            font-size: 12px;
+            font-weight: 700;
+        }
+        /* Make icon color controllable with alpha */
+        .rc-ico {
+            height: 56px;
+            width: 56px;
+            border-radius: 14px;
+            display: grid;
+            place-items: center;
+            /* base surface stays the same */
+            background: linear-gradient(135deg, #fff6f6, #ffeaea);
+            border: 1px solid rgba(203,1,1,.25);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,.85);
+            font-size: 22px;
+            /* dynamic color by alpha (12K faint → 24K strong) */
+            --alpha: 1; /* fallback */
+            color: rgb(203 1 1 / var(--alpha));
+        }
+	</style>
+	<style>
+        /* Calculator heading (no badge) */
+        #panel-calc .panel-title {
+            margin: 0 0 12px;
+            font-size: 22px;
+            font-weight: 800
+        }
+
+        /* Floating-label select with icon */
+        .calc-fields {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 14px;
+            margin-bottom: 14px
+        }
+
+        .fx-group {
+            position: relative;
+            padding-top: 18px;
+            --accent: #cb0101;
+        }
+
+        .fx-ico {
+            position: absolute;
+            left: 10px;
+            top: 26px;
+            width: 18px;
+            text-align: center;
+            color: #9aa4b2;
+            pointer-events: none;
+            transition: transform .18s ease, color .18s ease, top .18s ease;
+        }
+
+        .fx-label {
+            position: absolute;
+            left: 36px;
+            top: 26px;
+            color: #64748b;
+            background: #fff;
+            padding: 0 6px;
+            transform-origin: left top;
+            transition: transform .18s ease, color .18s ease, top .18s ease;
+        }
+
+        .fx-control {
+            width: 100%;
+            height: 44px;
+            padding: 0 38px 0 36px;
+            border: 0;
+            outline: none;
+            background: transparent;
+            border-bottom: 2px solid rgba(15,23,42,.12);
+            font-weight: 600;
+            color: #0f172a;
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+        }
+
+        .fx-caret {
+            position: absolute;
+            right: 10px;
+            top: 26px;
+            color: #9aa4b2;
+            pointer-events: none;
+            transition: color .18s ease, top .18s ease;
+        }
+
+        /* active line highlight */
+        .fx-line {
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: -1px;
+            height: 2px;
+            background: var(--accent);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform .18s ease;
+        }
+
+        /* Focus/filled state */
+        .fx-group.is-focused .fx-line,
+        .fx-group.has-value .fx-line {
+            transform: scaleX(1)
+        }
+
+        .fx-group.is-focused .fx-control,
+        .fx-group.has-value .fx-control {
+            border-bottom-color: transparent
+        }
+
+        .fx-group.is-focused .fx-label,
+        .fx-group.has-value .fx-label {
+            color: var(--accent);
+            top: 6px;
+            transform: scale(.85) translateY(-4px)
+        }
+
+        .fx-group.is-focused .fx-ico,
+        .fx-group.has-value .fx-ico {
+            color: var(--accent);
+            top: 6px
+        }
+
+        .fx-group.is-focused .fx-caret {
+            color: var(--accent);
+            top: 6px
+        }
+
+        /* Select base options (optional visual tune) */
+        #panel-calc select.fx-control option {
+            color: #0f172a
+        }
+        /* 2-up responsive row for the two selects */
+        .calc-fields {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 14px;
+            margin-bottom: 14px;
+        }
+
+        /* Beautiful calculator table */
+        .calc-pro {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            background: #ffffff;
+            border: 1px solid rgba(15,23,42,.12);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 20px rgba(2,6,23,.05);
+        }
+
+            .calc-pro thead th {
+                background: linear-gradient(180deg, #f8fafc, #eef2f7);
+                padding: 12px;
+                border-bottom: 1px solid rgba(15,23,42,.12);
+                color: #0b2136;
+                font-weight: 800;
+                font-size: 13px;
+                text-transform: uppercase;
+                letter-spacing: .03em;
+            }
+
+            .calc-pro tbody td {
+                padding: 12px;
+                border-bottom: 1px solid rgba(15,23,42,.08);
+                font-weight: 600;
+                color: #0f172a;
+            }
+
+            .calc-pro tbody tr:nth-child(even) {
+                background: #fafcff
+            }
+
+            .calc-pro tfoot td {
+                padding: 12px;
+                font-weight: 800;
+            }
+
+            .calc-pro td:first-child, .calc-pro th:first-child {
+                text-align: left;
+            }
+
+            .calc-pro td:not(:first-child), .calc-pro th:not(:first-child) {
+                text-align: right;
+            }
+
+        /* Rate badge chip with ₹; highlight color #cb0101 */
+
+        :root {
+            --badge-color: #01284c;
+        }
+
+        .money-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 12px;
+            border-radius: 999px;
+            color: #ffffff;
+            font-weight: 800;
+            font-size: 12px;
+            line-height: 1;
+            background: linear-gradient(135deg, color-mix(in srgb, var(--badge-color) 88%, #000 0%), var(--badge-color));
+            border: 1px solid color-mix(in srgb, var(--badge-color) 35%, #0000);
+            box-shadow: 0 6px 16px color-mix(in srgb, var(--badge-color) 28%, #0000), inset 0 1px 0 rgba(255,255,255,.2);
+            white-space: nowrap;
+        }
+
+            .money-badge .rupee {
+                display: grid;
+                place-items: center;
+                width: 18px;
+                height: 18px;
+                border-radius: 50%;
+                background: rgba(255,255,255,.15);
+                border: 1px solid rgba(255,255,255,.25);
+                font-size: 11px;
+            }
+
+            .money-badge .unit {
+                opacity: .85;
+                font-weight: 700
+            }
+        /* Highlighted footer rows */
+        .calc-pro tfoot tr {
+            background: #fff
+        }
+
+            .calc-pro tfoot tr.hl-row {
+                font-weight: 800;
+                border-top: 1px solid rgba(15,23,42,.12);
+                background: var(--hl-bg, #f8fafc);
+            }
+
+            .calc-pro tfoot tr.hl-total {
+                --hl: #2563eb;
+                --hl-bg: #f0f7ff
+            }
+            /* Total Amount */
+            .calc-pro tfoot tr.hl-gst {
+                --hl: #cb0101;
+                --hl-bg: #fff5f5
+            }
+            /* GST */
+            .calc-pro tfoot tr.hl-net {
+                --hl: #10b981;
+                --hl-bg: #eefaf3
+            }
+        /* Net Payable */
+
+        /* Amount badge for footer rows */
+        .amt-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background-color: color-mix(in srgb, var(--hl) 10%, #ffffff);
+            color: var(--hl);
+            border: 1px solid color-mix(in srgb, var(--hl) 35%, transparent);
+            border-radius: 999px;
+            padding: 6px 12px;
+            font-weight: 900;
+            font-size: 13px;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,.85), 0 6px 14px color-mix(in srgb, var(--hl) 20%, transparent);
+        }
+
+            .amt-badge .rupee {
+                display: inline-grid;
+                place-items: center;
+                height: 18px;
+                width: 18px;
+                border-radius: 50%;
+                background: color-mix(in srgb, var(--hl) 12%, #ffffff);
+                color: var(--hl);
+                font-size: 11px;
+                border: 1px solid color-mix(in srgb, var(--hl) 35%, transparent);
+            }
+        /* Sale Price Calculator header (matches Gold Rate header style) */
+        #panel-calc .section-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding-bottom: 10px;
+            margin: 0 0 14px;
+            position: relative;
+        }
+
+            #panel-calc .section-header::after {
+                content: "";
+                position: absolute;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                height: 3px;
+                background: linear-gradient(90deg, #01284c, rgba(1,40,76,.2) 60%, transparent);
+                border-radius: 999px;
+            }
+
+        #panel-calc .sh-ico {
+            width: 40px;
+            height: 40px;
+            display: grid;
+            place-items: center;
+            background: linear-gradient(135deg, #fef3c7, #fde68a);
+            border: 1px solid #f59e0b55;
+            border-radius: 10px;
+            color: #b45309;
+        }
+
+        #panel-calc .sh-title {
+            margin: 0;
+            font-size: 22px;
+            font-weight: 800;
+            letter-spacing: .2px;
+            color: #0f172a;
+        }
+	</style>
+	<style>
+        /* Section headers (reuse style from calculator header) */
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding-bottom: 10px;
+            margin: 0 0 14px;
+            position: relative;
+        }
+
+            .section-header::after {
+                content: "";
+                position: absolute;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                height: 3px;
+                background: linear-gradient(90deg, #01284c, rgba(1,40,76,.2) 60%, transparent);
+                border-radius: 999px;
+            }
+
+        .sh-ico {
+            width: 40px;
+            height: 40px;
+            display: grid;
+            place-items: center;
+            background: linear-gradient(135deg, #eef6ff, #e0edff);
+            border: 1px solid #cde3f7;
+            border-radius: 10px;
+            color: #01284c;
+        }
+
+        .sh-title {
+            margin: 0;
+            font-size: 20px;
+            font-weight: 800
+        }
+
+        /* History table */
+        .hist-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            background: #fff;
+            border: 1px solid rgba(15,23,42,.12);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 8px 18px rgba(2,6,23,.05);
+        }
+
+            .hist-table thead th {
+                background: linear-gradient(180deg, #f8fafc, #eef2f7);
+                padding: 12px;
+                border-bottom: 1px solid rgba(15,23,42,.12);
+                color: #0b2136;
+                font-weight: 800;
+                font-size: 13px;
+                text-transform: uppercase;
+            }
+
+            .hist-table tbody td {
+                padding: 12px;
+                border-bottom: 1px solid rgba(15,23,42,.08);
+            }
+
+            .hist-table tbody tr:nth-child(even) {
+                background: #fafcff
+            }
+
+            .hist-table td:nth-child(1), .hist-table td:nth-child(2), .hist-table th:nth-child(1), .hist-table th:nth-child(2) {
+                text-align: left
+            }
+
+            .hist-table td:nth-child(n+3), .hist-table th:nth-child(n+3) {
+                text-align: right
+            }
+
+        /* Use same floating input styles you already have (.fx-group, .fx-label, .fx-ico, .fx-control, .fx-line, .fx-caret) */
+	</style>
+</head>
+<body>
+	<!-- Top Bar -->
+	<header class="topbar">
+		<div class="brand">
+			<div class="logo" aria-hidden="true"></div>
+			<div class="brand-name">Gold Tools</div>
+		</div>
+		<div class="userbox">
+			<!-- Replace the existing welcome span with this -->
+			<div class="welcome" style="display:flex; flex-direction:column; line-height:1.1">
+				<span>Welcome</span>
+				<strong>Santosh Kumar Maharana</strong>
+			</div>
+			<button class="btn-ghost" id="changePwdBtn"><i class="fa fa-key"></i> Change Password</button>
+			<button class="btn-ghost" id="logoutBtn"><i class="fa fa-right-from-bracket"></i> Logout</button>
+		</div>
+	</header>
+
+	<!-- Centered Menubar with Submenus -->
+	<div class="menubar-wrap">
+		<nav class="menubar" role="navigation" aria-label="Main menu">
+			<ul class="menu">
+				<li>
+					<a href="#"><i class="fa fa-gauge"></i> Dashboard</a>
+					<div class="submenu" role="menu">
+						<a href="#"><i class="fa fa-layer-group"></i> Overview</a>
+						<a href="#"><i class="fa fa-bell"></i> Notifications</a>
+						<a href="#"><i class="fa fa-timeline"></i> Activity</a>
+					</div>
+				</li>
+				<li>
+					<a href="#"><i class="fa fa-user-gear"></i> Admin</a>
+					<div class="submenu" role="menu">
+						<a href="#"><i class="fa fa-users-gear"></i> Users & Roles</a>
+						<a href="#"><i class="fa fa-lock"></i> Security</a>
+						<a href="#"><i class="fa fa-gear"></i> Preferences</a>
+					</div>
+				</li>
+				<li>
+					<a href="#"><i class="fa fa-file-invoice-dollar"></i> Accounts</a>
+					<div class="submenu" role="menu">
+						<a href="#"><i class="fa fa-receipt"></i> Invoices</a>
+						<a href="#"><i class="fa fa-wallet"></i> Payments</a>
+						<a href="#"><i class="fa fa-scale-balanced"></i> Ledger</a>
+					</div>
+				</li>
+				<li>
+					<a href="#"><i class="fa fa-arrows-rotate"></i> Exchange</a>
+					<div class="submenu" role="menu">
+						<a href="#"><i class="fa fa-indian-rupee-sign"></i> Rates</a>
+						<a href="#"><i class="fa fa-right-left"></i> Conversions</a>
+						<a href="#"><i class="fa fa-clock-rotate-left"></i> History</a>
+					</div>
+				</li>
+				<li>
+					<a href="#"><i class="fa fa-boxes-stacked"></i> Inventory</a>
+					<div class="submenu" role="menu">
+						<a href="#"><i class="fa fa-box-open"></i> Items</a>
+						<a href="#"><i class="fa fa-tags"></i> Categories</a>
+						<a href="#"><i class="fa fa-truck"></i> Suppliers</a>
+					</div>
+				</li>
+				<li>
+					<a href="#"><i class="fa fa-cart-shopping"></i> Orders</a>
+					<div class="submenu" role="menu">
+						<a href="#"><i class="fa fa-file-circle-check"></i> Sales Orders</a>
+						<a href="#"><i class="fa fa-file-circle-plus"></i> Purchase Orders</a>
+						<a href="#"><i class="fa fa-rotate"></i> Returns</a>
+					</div>
+				</li>
+				<li>
+					<a href="#"><i class="fa fa-chart-column"></i> Reports</a>
+					<div class="submenu" role="menu">
+						<a href="#"><i class="fa fa-chart-line"></i> Performance</a>
+						<a href="#"><i class="fa fa-table"></i> Listings</a>
+						<a href="#"><i class="fa fa-download"></i> Exports</a>
+					</div>
+				</li>
+				<li>
+					<a href="#"><i class="fa fa-store"></i> POS</a>
+					<div class="submenu" role="menu">
+						<a href="#"><i class="fa fa-cash-register"></i> Checkout</a>
+						<a href="#"><i class="fa fa-users"></i> Customers</a>
+						<a href="#"><i class="fa fa-ticket"></i> Discounts</a>
+					</div>
+				</li>
+			</ul>
+		</nav>
+	</div>
+
+	<main class="wrapper">
+		<div class="layout">
+			<!-- SIDE TABS -->
+			<aside class="side-tabs" role="tablist" aria-orientation="vertical">
+				<button class="tab-btn accent-amber active" role="tab" aria-selected="true" aria-controls="panel-rate" data-tab="rate">
+					<i class="fa-solid fa-coins tab-ico"></i>
+					<span>Current Gold Rate</span>
+				</button>
+
+				<button class="tab-btn accent-blue" role="tab" aria-selected="false" aria-controls="panel-calc" data-tab="calc">
+					<i class="fa-solid fa-calculator tab-ico"></i>
+					<span>Sale Price Calculator</span>
+				</button>
+
+				<button class="tab-btn accent-red" role="tab" aria-selected="false" aria-controls="panel-history" data-tab="history">
+					<i class="fa-solid fa-chart-line tab-ico"></i>
+					<span>Gold Rate History</span>
+				</button>
+
+				<button class="tab-btn accent-green" role="tab" aria-selected="false" aria-controls="panel-set" data-tab="set">
+					<i class="fa-solid fa-calendar-day tab-ico"></i>
+					<span>Set Gold Rate Today</span>
+				</button>
+			</aside>
+
+			<!-- RIGHT CONTENT -->
+            <section>
+
+                <!-- Current Gold Rate -->
+                <div id="panel-rate" class="card" role="tabpanel">
+                    <!-- Put this at the top of the Current Gold Rate panel -->
+                    <span id="rateBadge" class="rate-badge">Gold Rate</span>
+
+                    <div class="panel-header">
+                        <div class="ph-icon" aria-hidden="true">
+                            <i class="fa-solid fa-coins"></i>
+                        </div>
+                        <div>
+                            <h2 class="panel-title">114330 INR</h2>
+                            <p class="panel-sub">24K - 10Gram</p>
+                        </div>
+                    </div>
+
+                    <div class="rate-cards" id="goldRateCards">
+                        <div class="rate-card">
+                            <div class="rc-ico"><i class="fa-solid fa-crown"></i></div>
+                            <div class="rc-rate">11,433</div>
+                            <div class="rc-unit">INR / Gram</div>
+                            <span class="rc-badge">Gold : 24 K</span>
+                        </div>
+
+                        <div class="rate-card">
+                            <div class="rc-ico"><i class="fa-solid fa-gem"></i></div>
+                            <div class="rc-rate">10,480</div>
+                            <div class="rc-unit">INR / Gram</div>
+                            <span class="rc-badge">Gold : 22 K</span>
+                        </div>
+
+                        <div class="rate-card">
+                            <div class="rc-ico"><i class="fa-solid fa-ring"></i></div>
+                            <div class="rc-rate">9,528</div>
+                            <div class="rc-unit">INR / Gram</div>
+                            <span class="rc-badge">Gold : 20 K</span>
+                        </div>
+
+                        <!-- repeat for other purities -->
+                    </div>
+                </div>
+
+                <!-- Sales Price Calculator -->
+                <div id="panel-calc" class="card hidden" role="tabpanel" aria-hidden="true">
+                    <div class="section-header">
+                        <div class="sh-ico" aria-hidden="true">
+                            <i class="fa-solid fa-calculator"></i>
+                        </div>
+                        <h2 class="sh-title">Sale Price Calculator</h2>
+                    </div>
+
+                    <!-- Inputs in one responsive row -->
+                    <form class="calc-fields" autocomplete="off">
+                        <div class="fx-group" id="grpCategory">
+                            <i class="fa-solid fa-layer-group fx-ico" aria-hidden="true"></i>
+                            <label class="fx-label" for="calcCategory">Category</label>
+                            <select id="calcCategory" class="fx-control" aria-label="Category">
+                                <option value="" selected disabled></option>
+                                <option>Diamond Bali (Available :10)</option>
+                                <option>Plain Gold</option>
+                                <option>Antique Collection</option>
+                            </select>
+                            <i class="fa-solid fa-chevron-down fx-caret" aria-hidden="true"></i>
+                            <span class="fx-line"></span>
+                        </div>
+
+                        <div class="fx-group" id="grpItem">
+                            <i class="fa-solid fa-box fx-ico" aria-hidden="true"></i>
+                            <label class="fx-label" for="calcItem">Item</label>
+                            <select id="calcItem" class="fx-control" aria-label="Item">
+                                <option value="" selected disabled></option>
+                                <option>BI#029 (Available :1)</option>
+                                <option>GL#112 (Available :4)</option>
+                                <option>AN#310 (Available :2)</option>
+                            </select>
+                            <i class="fa-solid fa-chevron-down fx-caret" aria-hidden="true"></i>
+                            <span class="fx-line"></span>
+                        </div>
+                    </form>
+
+                    <!-- Professional table with badges on Rate column -->
+                    <table class="calc-pro">
+                        <thead>
+                            <tr>
+                                <th>Variant</th>
+                                <th>Weight</th>
+                                <th>Rate</th>
+                                <th>Discount</th>
+                                <th>Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Gold - 14K</td>
+                                <td>2.186G</td>
+                                <td>
+                                    <span class="money-badge">
+                                        <span class="rupee">₹</span>
+                                        <span>6,669</span>
+
+                                    </span>
+                                </td>
+                                <td>—</td>
+                                <td>
+                                    <span class="money-badge">
+                                        <span class="rupee">₹</span>
+                                        <span>14,578</span>
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="muted">Code:KII Clarity: SI1, Color: IJ, BBJ1, Cut: RBC</td>
+                                <td>0.17K</td>
+                                <td>
+                                    <span class="money-badge">
+                                        <span class="rupee">₹</span>
+                                        <span>6,669</span>
+
+                                    </span>
+                                </td>
+                                <td>0</td>
+                                <td>
+                                    <span class="money-badge">
+                                        <span class="rupee">₹</span>
+                                        <span>14,578</span>
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="muted">Colored stone</td>
+                                <td>0.15K</td>
+                                <td>
+                                    <span class="money-badge">
+                                        <span class="rupee">₹</span>
+                                        <span>6,669</span>
+
+                                    </span>
+                                </td>
+                                <td>—</td>
+                                <td>
+                                    <span class="money-badge">
+                                        <span class="rupee">₹</span>
+                                        <span>14,578</span>
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="muted">Making Charges :</td>
+                                <td>2.186G</td>
+                                <td>
+                                    <span class="money-badge">
+                                        <span class="rupee">₹</span>
+                                        <span>6,669</span>
+
+                                    </span>
+                                </td>
+                                <td>—</td>
+                                <td>
+                                    <span class="money-badge">
+                                        <span class="rupee">₹</span>
+                                        <span>14,578</span>
+                                    </span>
+                                </td>
+                            </tr>
+                        </tbody>
+                        <tfoot>
+                            <tr class="hl-row hl-total">
+                                <td colspan="4">Total Amount :</td>
+                                <td>
+                                    <span class="amt-badge"><span class="rupee">₹</span> 38,302</span>
+                                </td>
+                            </tr>
+                            <tr class="hl-row hl-gst">
+                                <td colspan="4">GST(3%) :</td>
+                                <td>
+                                    <span class="amt-badge"><span class="rupee">₹</span> 1,149</span>
+                                </td>
+                            </tr>
+                            <tr class="hl-row hl-net">
+                                <td colspan="4">Net Payable :</td>
+                                <td>
+                                    <span class="amt-badge"><span class="rupee">₹</span> 39,451</span>
+                                </td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+
+                <!-- GOLD RATE HISTORY -->
+                <div id="panel-history" class="card" style="margin-top:16px">
+                    <div class="section-header">
+                        <div class="sh-ico" aria-hidden="true">
+                        <i class="fa-solid fa-chart-line tab-ico"></i></div>
+                        <h3 class="sh-title">Gold Rate History</h3>
+                    </div>
+
+                    <form class="calc-fields" autocomplete="off" style="margin-bottom:10px">
+                        <div class="fx-group" id="grpHistDate">
+                            <i class="fa-solid fa-calendar-day fx-ico" aria-hidden="true"></i>
+                            <label class="fx-label" for="histDate">Select Date</label>
+                            <input id="histDate" class="fx-control" type="date" placeholder=" " />
+                            <i class="fa-solid fa-chevron-down fx-caret" aria-hidden="true"></i>
+                            <span class="fx-line"></span>
+                        </div>
+                    </form>
+
+                    <table class="hist-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Time</th>
+                                <th>Rate (24K 10G)</th>
+                                <th>Rate (24K 1G)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="histBody">
+                            <tr>
+                                <td>23-Sep-25</td>
+                                <td>10:15 AM</td>
+                                <td><span class="money-badge"><span class="rupee">₹</span><span>114,330</span></span></td>
+                                <td><span class="money-badge"><span class="rupee">₹</span><span>11,433</span></span></td>
+                            </tr>
+                            <tr>
+                                <td>22-Sep-25</td>
+                                <td>04:05 PM</td>
+                                <td><span class="money-badge"><span class="rupee">₹</span><span>113,980</span></span></td>
+                                <td><span class="money-badge"><span class="rupee">₹</span><span>11,398</span></span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- SET GOLD RATE TODAY -->
+                <div id="panel-set" class="card" style="margin-top:16px">
+                    <div class="section-header">
+                        <div class="sh-ico" aria-hidden="true"><i class="fa-solid fa-calendar-day tab-ico"></i></div>
+                        <h3 class="sh-title">Set Gold Rate Today</h3>
+                    </div>
+
+                    <form class="calc-fields" autocomplete="off">
+                        <div class="fx-group" id="grpSetRate">
+                            <i class="fa-solid fa-indian-rupee-sign fx-ico" aria-hidden="true"></i>
+                            <label class="fx-label" for="setRate">Enter 24K per Gram (INR)</label>
+                            <input id="setRate" class="fx-control" type="number" inputmode="decimal" step="1" placeholder=" " />
+                            <span class="fx-line"></span>
+                        </div>                        
+                    </form>
+
+                    <button type="button" class="btn" style="background:#0b7f4a; border:1px solid #0b7f4a; color:#fff; padding:10px 14px; border-radius:10px; font-weight:700">
+                        <i class="fa-solid fa-cloud-arrow-up"></i> Update
+                    </button>
+                </div>
+            </section>
+		</div>
+
+		<footer class="footer">© <span id="year"></span> Acme Corp. All rights reserved.</footer>
+	</main>
+
+	<script>
+		document.getElementById('year').textContent = new Date().getFullYear();
+
+		// Side tabs
+		const buttons = Array.from(document.querySelectorAll('.tab-btn'));
+		const panels = {
+			rate: document.getElementById('panel-rate'),
+			calc: document.getElementById('panel-calc'),
+			history: document.getElementById('panel-history'),
+			set: document.getElementById('panel-set')
+		};
+
+		function activateTab(key) {
+			buttons.forEach(b => {
+				const active = b.dataset.tab === key;
+				b.classList.toggle('active', active);
+				b.setAttribute('aria-selected', String(active));
+			});
+			Object.entries(panels).forEach(([k, el]) => {
+				const show = k === key;
+				el.classList.toggle('hidden', !show);
+				el.setAttribute('aria-hidden', String(!show));
+			});
+		}
+
+		buttons.forEach(b => {
+			b.addEventListener('click', () => activateTab(b.dataset.tab));
+			b.addEventListener('keydown', e => {
+				const i = buttons.indexOf(b);
+				if (e.key === 'ArrowDown') { e.preventDefault(); (buttons[i + 1] || buttons[0]).focus(); }
+				if (e.key === 'ArrowUp') { e.preventDefault(); (buttons[i - 1] || buttons[buttons.length - 1]).focus(); }
+			});
+		});
+
+		// Demo handlers
+		document.getElementById('logoutBtn').addEventListener('click', () => alert('Logging out...'));
+		document.getElementById('changePwdBtn').addEventListener('click', () => alert('Change password clicked'));
+	</script>
+	<script>
+        // Put near your other JS
+        (function setGoldRateBadge() {
+            function fmt(d) {
+                const dd = String(d.getDate()).padStart(2, '0');
+                const mmm = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"][d.getMonth()];
+                const yy = String(d.getFullYear()).slice(-2);
+                return `${dd}-${mmm}-${yy}`;
+            }
+            const el = document.getElementById('rateBadge');
+            if (el) { el.textContent = `Gold Rate ${fmt(new Date())}`; }
+		})();
+        // Populate gold rate cards dynamically (optional)
+        // Same icon for all, alpha fades with purity
+        (function renderGoldCardsWithFade() {
+            const sameIcon = 'fa-coins';
+            const purities = [
+                { k: 24, rate: '11,433' },
+                { k: 22, rate: '10,480' },
+                { k: 20, rate: '9,528' },
+                { k: 18, rate: '8,575' },
+                { k: 16, rate: '7,622' },
+                { k: 14, rate: '6,669' },
+                { k: 12, rate: '5,716' },
+            ];
+
+            // Map K value to alpha between 0.45 (12K) and 1.0 (24K)
+            function alphaFromK(k) {
+                const minK = 12, maxK = 24;
+                const t = Math.max(0, Math.min(1, (k - minK) / (maxK - minK)));
+                return (0.45 + 0.55 * t).toFixed(2);
+            }
+
+            const el = document.getElementById('goldRateCards');
+            if (!el) return;
+
+            el.innerHTML = purities.map(p => `
+		<div class="rate-card">
+			<div class="rc-ico" style="--alpha:${alphaFromK(p.k)}"><i class="fa-solid ${sameIcon}"></i></div>
+			<div class="rc-rate">${p.rate}</div>
+			<div class="rc-unit">INR / Gram</div>
+			<span class="rc-badge">Gold : ${p.k} K</span>
+		</div>
+	`).join('');
+        })();
+	</script>
+	<script>
+        (function setupFloatingSelects() {
+            function wire(group) {
+                const select = group.querySelector('.fx-control');
+                function sync() {
+                    group.classList.toggle('has-value', !!select.value);
+                }
+                select.addEventListener('focus', () => group.classList.add('is-focused'));
+                select.addEventListener('blur', () => group.classList.remove('is-focused'));
+                select.addEventListener('change', sync);
+                sync();
+            }
+            ['grpCategory', 'grpItem'].forEach(id => {
+                const g = document.getElementById(id);
+                if (g) wire(g);
+            });
+        })();
+	</script>
+    <script>
+        // Floating behavior for new fields
+        (function setupHistoryAndSetRate() {
+            const ids = ['grpHistDate', 'grpSetRate', 'grpSetDate'];
+            function wire(id) {
+                const g = document.getElementById(id);
+                if (!g) return;
+                const c = g.querySelector('.fx-control');
+                function sync() { g.classList.toggle('has-value', !!c.value); }
+                c.addEventListener('focus', () => g.classList.add('is-focused'));
+                c.addEventListener('blur', () => g.classList.remove('is-focused'));
+                c.addEventListener('input', sync);
+                c.addEventListener('change', sync);
+                sync();
+            }
+            ids.forEach(wire);
+        })();
+        // Auto-open calendar for #histDate on focus
+        (function autoOpenHistDatePicker() {
+            const input = document.getElementById('histDate');
+            const group = document.getElementById('grpHistDate');
+            if (!input) return;
+
+            function openPicker() {
+                if (typeof input.showPicker === 'function') {
+                    try { input.showPicker(); } catch (e) { }
+                } else {
+                    // Fallback for browsers without showPicker
+                    input.click();
+                }
+            }
+
+            input.addEventListener('focus', () => {
+                // Ensure focus applied before opening
+                setTimeout(openPicker, 0);
+            });
+
+            // Click anywhere on the group to focus & open
+            if (group) {
+                group.addEventListener('click', (e) => {
+                    if (e.target !== input) input.focus();
+                });
+            }
+        })();
+    </script>
+</body>
+</html>
